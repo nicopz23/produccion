@@ -74,7 +74,7 @@ if (isset($_POST["username"])) {
                     $error = "No se ha podido crear el usuario";
                 }
             } catch (PDOException $e) {
-                $error = "No se ha podido crear el usuario";
+                $error = "No se ha podido crear el usuario". $e->getMessage();
             }
         }
     }
