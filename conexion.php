@@ -12,9 +12,9 @@ try {
 
     // Establecer el modo de error de PDO a excepción
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "Conexion exitosa con config";
+    //echo "Conexion exitosa con config";
 
 } catch (PDOException $e) {
-    echo "Fallo la conexion";
+    //echo "Fallo la conexion";
     die("Error de conexión: " . $e->getMessage());
 }
