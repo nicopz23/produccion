@@ -1,20 +1,36 @@
 <?php
-require_once 'conexion.php';
+include_once("./models/product.php");
 session_start();
-$sql = 'select * from product';
-$consulta = $conn->prepare($sql);
-$consulta->execute();
-$resultados = $consulta->fetchAll(PDO::FETCH_ASSOC);
-
-//Compruebo si hay carrito
-if (isset($_SESSION['username'])) {
-    //comprobar si hay carrito en la bd
-    $usernamec = $_SESSION['username'];
-} 
-if (isset($_SESSION['cart'])) {
-    $cart = $_SESSION["cart"];
+if (isset($_SESSION["username"])) {
+    $usernamec = $_SESSION["username"];
+    if (isset($_SESSION["cart"])) {
+        //si existe session de carrito y usuario puede entrar al carrito
+        $cart = $_SESSION["cart"];
+        require_once 'conexion.php';
+        foreach ($cart as $product) {
+            $sql = "select * from product where idproduct = ?";
+            $stm = $conn->prepare($sql);
+            $stm->bindParam(1, $product->idproduct);
+            $stm->execute();
+            if ($stm->rowCount() > 0) {
+                $result = $stm->fetch(PDO::FETCH_ASSOC);
+                $product->name = $result["name"];
+                $product->description = $result["description"];
+                $product->price = $result["price"];
+                $product->image = $result["image"];
+            } else {
+            }
+        }
+    } else {
+        header("Location: ./");
+        exit();
+    }
+} else {
+    //si no tiene session redirije a index
+    header("Location: ./");
+    exit();
 }
-
+var_dump($cart);
 ?>
 <!doctype html>
 <html lang="en">
@@ -28,7 +44,7 @@ if (isset($_SESSION['cart'])) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <title>App Pedidos</title>
+    <title>Mi Carrito</title>
 </head>
 
 <body>
@@ -52,7 +68,7 @@ if (isset($_SESSION['cart'])) {
                     </li>
 
                 </ul>
-                <span id="user"><?php if(isset($usernamec)) echo "Bienvenido ".$usernamec;?></span>
+                <span id="user"><?php if (isset($usernamec)) echo "Bienvenido " . $usernamec; ?></span>
             </div>
         </div>
     </nav>
@@ -61,55 +77,38 @@ if (isset($_SESSION['cart'])) {
         <div class="shop-cart" id="cart">
             <a class="nav-link" href="cart"><span><i class="fas fa-shopping-cart"></i><?php echo isset($cart) ? count($cart) : ''; ?> </span></a>
         </div>
-        <h3>Productos</h3>
+        <h3>Carrito</h3>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Total</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td><img class="img-cart" src="assets/product/manzana.jpg" alt=""></td>
+                        <td><h6>Manzana</h6>
+                        <p>Manzana Golden</p>
+                    </td>
+                        <td><input type="number" value="3"></td>
+                        <td>1,2 €/k</td>
+                        <td>4,8 €/k</td>
+                        <td>x</td>
+                    </tr>
+                    <?php
 
-        <?php
-        foreach ($resultados as $product) {
-            echo '<div class="card productcard col-sm-12 col-md-3" style="width: 18rem;">
-        <img class="card-img-top" src="assets/product/' . $product["image"] . '" alt="Card image cap">
-        <div class="card-body">
-            <div class="producto-detalle">
-                <div>
-                    <h5 class="card-title">' . $product["name"] . '</h5>
-                    <p class="card-text">' . $product["description"] . '</p>
-                </div>
-                <div>
-                    <h5 class="card-title">' . $product["price"] . ' €/kg</h5>
-                </div>
-            </div>
-            <form action="addtocart.php" method="get">
-                <div class="add-to-cart">
-                    <input type="hidden" name="idproduct" value = "' . $product['idproduct'] . '">
-                    <input class="form-control" type ="number" min = 1 step=1 >
-                    <button class="btn btn-primary"><i class="fa-solid fa-cart-plus"></i></button>
-                </div>
-            </form>
-            </div>
-        </div>';
-        }
-        ?>
-    </div>
-    <div id="modal-login" class="modal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Login</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form action="login.php" method="post">
-                    <div class="modal-body">
-                        <h5>Para seguir a tu compra tienes que iniciar sesión</h5>
-                        <input class="form-control email" type="email" name="email" id="email" placeholder="Email" required>
-                        <input class="form-control" type="password" name="password" id="password" placeholder="Password" required>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Login</button>
-                        </div>
-                </form>
-            </div>
+                    ?>
+                </tbody>
+            </table>
         </div>
-    </div>
     </div>
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
