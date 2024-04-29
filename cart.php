@@ -92,19 +92,24 @@ var_dump($cart);
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td><img class="img-cart" src="assets/product/manzana.jpg" alt=""></td>
-                        <td><h6>Manzana</h6>
-                        <p>Manzana Golden</p>
-                    </td>
-                        <td><input type="number" value="3"></td>
-                        <td>1,2 €/k</td>
-                        <td>4,8 €/k</td>
-                        <td>x</td>
-                    </tr>
                     <?php
-
+                    $total = 0;
+                    foreach ($cart as $key => $product) {
+                        $total += $product->price*$product->quantity;
+                        echo '<tr>
+                        <th scope="row">'.$key.'</th>
+                        <td><img class="img-cart" src="assets/product/'.$product->image.'" alt=""></td>
+                        <td>
+                            <h6>'.$product->name.'</h6>
+                            <p>'.$product->description.'</p>
+                        </td>
+                        <td><input type="number" value="'.$product->quantity.'"></td>
+                        <td>'.$product->price.' €/k</td>
+                        <td>'.$product->price*$product->quantity.' €/k</td>
+                        <td>x</td>
+                    </tr>';
+                    }
+                    echo "<tr> <td col-spam></td> </tr>"
                     ?>
                 </tbody>
             </table>
