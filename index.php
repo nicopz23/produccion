@@ -1,4 +1,5 @@
 <?php
+include_once "./models/product.php";
 require_once 'conexion.php';
 session_start();
 $sql = 'select * from product';
@@ -7,12 +8,28 @@ $consulta->execute();
 $resultados = $consulta->fetchAll(PDO::FETCH_ASSOC);
 
 //Compruebo si hay carrito
+if (isset($_SESSION['cart'])) {
+    $cart = $_SESSION["cart"];
+}
+
 if (isset($_SESSION['username'])) {
     //comprobar si hay carrito en la bd
     $usernamec = $_SESSION['username'];
-} 
-if (isset($_SESSION['cart'])) {
-    $cart = $_SESSION["cart"];
+    $iduser = $_SESSION["iduser"];
+}
+if (!isset($cart)) {
+    $sql = "select * from cart_detail where idcart=(select idcart from cart where iduser=? order by date desc limit 1)";
+    $consulta = $conn->prepare($sql);
+    $consulta->bindParam(1, $iduser);
+    $consulta->execute();
+    $resultados = $consulta->fetchAll(PDO::FETCH_ASSOC);
+    $cart = array();
+    foreach ($resultados as $key => $p) {
+        $product = new Product($p["idproduct"], $p["quantity"]);
+        array_push($cart, $product);
+    }
+    $_SESSION["cart"] = $cart;
+    $_SESSION["idcart"] = $resultados["idcart"];
 }
 
 ?>
@@ -52,7 +69,7 @@ if (isset($_SESSION['cart'])) {
                     </li>
 
                 </ul>
-                <span id="user"><?php if(isset($usernamec)) echo "Bienvenido ".$usernamec;?></span>
+                <span id="user"><?php if (isset($usernamec)) echo "Bienvenido " . $usernamec; ?></span>
             </div>
         </div>
     </nav>
@@ -79,6 +96,8 @@ if (isset($_SESSION['cart'])) {
             </div>
             <form action="addtocart.php" method="get">
                 <div class="add-to-cart">
+                    <input type="hidden" name="idcart" value = "' . $idcart . '">
+                    <input type="hidden" name="price" value="' . $product["price"] . '">
                     <input type="hidden" name="idproduct" value = "' . $product['idproduct'] . '">
                     <input class="form-control" type ="number" name="quantity" min = 1 step=1 >
                     <button class="btn btn-primary"><i class="fa-solid fa-cart-plus"></i></button>

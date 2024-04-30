@@ -22,11 +22,9 @@ if (isset($_SESSION["username"])) {
             } else {
             }
         }
-        $sql_delete = "delete from cart_detail where idcart=".$idcart;
-        $conn->exec($sql_delete);
-        if (isset( $_SESSION["idcart"])) {
+        if (isset($_SESSION["idcart"])) {
             $idcart = $_SESSION["idcart"];
-        }else{
+        } else {
             $sql_cart = "insert into cart (iduser) value (?)";
             $stm_cart = $conn->prepare($sql_cart);
             $stm_cart->bindParam(1, $iduser);
@@ -34,6 +32,8 @@ if (isset($_SESSION["username"])) {
             $idcart = $conn->lastInsertId();
             $_SESSION["idcart"] = $idcart;
         }
+        $sql_delete = "delete from cart_detail where idcart=" . $idcart;
+        $conn->exec($sql_delete);
         foreach ($cart as $key => $product) {
             $sql = "insert into cart_detail (idcart, idproduct, quantity, price) values (?,?,?,?)";
             $stm = $conn->prepare($sql);
@@ -127,10 +127,10 @@ var_dump($cart);
                             <h6>' . $product->name . '</h6>
                             <p>' . $product->description . '</p>
                         </td>
-                        <td><input type="number" value="' . $product->quantity . '"></td>
+                        <td><input class="quantity" type="number" value="' . $product->quantity . '"></td>
                         <td>' . $product->price . ' €/k</td>
                         <td>' . floatval($product->price) * floatval($product->quantity) . ' €/k</td>
-                        <td>x</td>
+                        <td><span class="delete" id="idcartdetail' . $product->idcartdetail . '" ><i class="fa-solid fa-circle-xmark" style="color: red;"></i></span> </td>
                     </tr>';
                     }
                     echo "<tr><td class='importe_total'  colspan='5'>Total:</td><td class='euros_total' colspan='2'>" . $total . " €</td></tr>"
@@ -148,7 +148,7 @@ var_dump($cart);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
     -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="assets/js/product.js"></script>
+    <script src="./assets/js/product.js"></script>
 </body>
 
 </html>
