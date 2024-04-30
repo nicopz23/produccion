@@ -2,10 +2,11 @@
 include_once("./models/product.php");
 session_start();
 if (isset($_SESSION["username"])) {
-    $usernamec = $_SESSION["username"];
     if (isset($_SESSION["cart"])) {
         //si existe session de carrito y usuario puede entrar al carrito
         $cart = $_SESSION["cart"];
+        $iduser = $_SESSION["iduser"];
+        $usernamec = $_SESSION["username"];
         require_once 'conexion.php';
         foreach ($cart as $product) {
             $sql = "select * from product where idproduct = ?";
@@ -20,6 +21,29 @@ if (isset($_SESSION["username"])) {
                 $product->image = $result["image"];
             } else {
             }
+        }
+        $sql_delete = "delete from cart_detail where idcart=".$idcart;
+        $conn->exec($sql_delete);
+        if (isset( $_SESSION["idcart"])) {
+            $idcart = $_SESSION["idcart"];
+        }else{
+            $sql_cart = "insert into cart (iduser) value (?)";
+            $stm_cart = $conn->prepare($sql_cart);
+            $stm_cart->bindParam(1, $iduser);
+            $stm_cart->execute();
+            $idcart = $conn->lastInsertId();
+            $_SESSION["idcart"] = $idcart;
+        }
+        foreach ($cart as $key => $product) {
+            $sql = "insert into cart_detail (idcart, idproduct, quantity, price) values (?,?,?,?)";
+            $stm = $conn->prepare($sql);
+            $stm->bindParam(1, $idcart);
+            $stm->bindParam(2, $product->idproduct);
+            $stm->bindParam(3, $product->quantity);
+            $stm->bindParam(4, $product->price);
+            $stm->execute();
+            $idcartdetail = $conn->lastInsertId();
+            $product->idcartdetail = $idcartdetail;
         }
     } else {
         header("Location: ./");
@@ -95,21 +119,21 @@ var_dump($cart);
                     <?php
                     $total = 0;
                     foreach ($cart as $key => $product) {
-                        $total += $product->price*$product->quantity;
+                        $total += floatval($product->price) * floatval($product->quantity);
                         echo '<tr>
-                        <th scope="row">'.$key.'</th>
-                        <td><img class="img-cart" src="assets/product/'.$product->image.'" alt=""></td>
+                        <th scope="row">' . $key . '</th>
+                        <td><img class="img-cart" src="assets/product/' . $product->image . '" alt=""></td>
                         <td>
-                            <h6>'.$product->name.'</h6>
-                            <p>'.$product->description.'</p>
+                            <h6>' . $product->name . '</h6>
+                            <p>' . $product->description . '</p>
                         </td>
-                        <td><input type="number" value="'.$product->quantity.'"></td>
-                        <td>'.$product->price.' €/k</td>
-                        <td>'.$product->price*$product->quantity.' €/k</td>
+                        <td><input type="number" value="' . $product->quantity . '"></td>
+                        <td>' . $product->price . ' €/k</td>
+                        <td>' . floatval($product->price) * floatval($product->quantity) . ' €/k</td>
                         <td>x</td>
                     </tr>';
                     }
-                    echo "<tr> <td col-spam></td> </tr>"
+                    echo "<tr><td class='importe_total'  colspan='5'>Total:</td><td class='euros_total' colspan='2'>" . $total . " €</td></tr>"
                     ?>
                 </tbody>
             </table>

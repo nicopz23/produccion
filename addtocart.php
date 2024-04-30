@@ -4,7 +4,7 @@ session_start();
 
 if(isset($_GET["idproduct"])){
     $idproduct=$_GET["idproduct"];
-    $quantity=isset($_GET["quantity"])?$_GET["quantity"]:1;
+    $quantity = isset($_GET["quantity"]) && $_GET["quantity"] !== '' ? max(1, intval($_GET["quantity"])) : 1;
     //Comprobamos si el usuario se ha logeado
     if(isset($_SESSION["user"])){
         //Guardamos en bbdd

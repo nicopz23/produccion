@@ -13,6 +13,7 @@ if (isset($_POST["email"])) {
             $result = $stm->fetch(PDO::FETCH_ASSOC);
             session_start();
             $_SESSION["username"] = $result["username"];
+            $_SESSION["iduser"] = $result["iduser"];
             header("Location: ./");
             exit();
         } else {
