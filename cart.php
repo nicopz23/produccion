@@ -7,7 +7,13 @@ if (isset($_SESSION["username"])) {
         $cart = $_SESSION["cart"];
         $iduser = $_SESSION["iduser"];
         $usernamec = $_SESSION["username"];
+        //consultamos las direcciones
         require_once 'conexion.php';
+        $sql = "select * from address where iduser=" . $iduser;
+        $stm = $conn->prepare($sql);
+        $stm->execute();
+        //guardamos las direcciones en la variable para luego utilizarlas en el form
+        $address = $stm->fetchAll(PDO::FETCH_ASSOC);
         foreach ($cart as $product) {
             $sql = "select * from product where idproduct = ?";
             $stm = $conn->prepare($sql);
@@ -19,7 +25,7 @@ if (isset($_SESSION["username"])) {
                 $product->description = $result["description"];
                 $product->price = $result["price"];
                 $product->image = $result["image"];
-            } 
+            }
         }
         if (isset($_SESSION["idcart"])) {
             $idcart = $_SESSION["idcart"];
@@ -53,8 +59,11 @@ if (isset($_SESSION["username"])) {
     header("Location: ./");
     exit();
 }
-var_dump($cart);
+
+
+
 ?>
+
 <!doctype html>
 <html lang="en">
 
@@ -138,11 +147,30 @@ var_dump($cart);
             </table>
         </div>
         <button class="btn btn-success" id="btnConfirm" type="button">Order Confirm</button>
-        <div class="datos_envio" hidden>
-            <span>Delivery date:</span><input type="date" name="date">
-            <hr>
-            <span>Delivery Address</span><input type="text" name="address">
-            <hr>
+        <div class="datos_envio">
+
+            <form action="add_order" method="post">
+                <span>Delivery date: </span><input type="date" name="date" required>
+                <hr>
+                <span>Delivery Address </span>
+                <div class="address row">
+                    <?php
+                    foreach ($address as $key => $dir) {
+                        echo ' <div class="col-md-3 col-sm-12">
+                    <input type="radio" name="idaddress" value="' . $dir["idaddress"] . '" id="" required>
+                    <h5>' . $dir["street"] . '</h5>
+                    <p><span>' . $dir["zipcode"] . '</span>-<span>' . $dir["city"] . '</span></p>
+                    <p>' . $dir["country"] . '</p>
+                </div>';
+                    }
+                    ?>
+                </div>
+                <div>
+                    <a href="add_address"><i class="fa-solid fa-map-location-dot"></i>
+                        <i class="fa-solid fa-plus"></i></a>
+                </div>
+                <input type="submit" value="Create Order" class="btn btn-success">
+            </form>
         </div>
     </div>
     <!-- Option 1: Bootstrap Bundle with Popper -->
