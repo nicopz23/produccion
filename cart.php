@@ -19,8 +19,7 @@ if (isset($_SESSION["username"])) {
                 $product->description = $result["description"];
                 $product->price = $result["price"];
                 $product->image = $result["image"];
-            } else {
-            }
+            } 
         }
         if (isset($_SESSION["idcart"])) {
             $idcart = $_SESSION["idcart"];
@@ -99,7 +98,7 @@ var_dump($cart);
 
     <div class="container contenedor-productos row">
         <div class="shop-cart" id="cart">
-            <a class="nav-link" href="cart"><span><i class="fas fa-shopping-cart"></i><?php echo isset($cart) ? count($cart) : ''; ?> </span></a>
+            <a class="nav-link" href="cart"><span><i class="fas fa-shopping-cart"></i><span id="products_count"><?php echo isset($cart) ? count($cart) : ''; ?></span> </span></a>
         </div>
         <h3>Carrito</h3>
         <div class="table-responsive">
@@ -120,7 +119,7 @@ var_dump($cart);
                     $total = 0;
                     foreach ($cart as $key => $product) {
                         $total += floatval($product->price) * floatval($product->quantity);
-                        echo '<tr>
+                        echo '<tr id="idcartdetail' . $product->idcartdetail . '">
                         <th scope="row">' . $key . '</th>
                         <td><img class="img-cart" src="assets/product/' . $product->image . '" alt=""></td>
                         <td>
@@ -130,13 +129,20 @@ var_dump($cart);
                         <td><input class="quantity" type="number" value="' . $product->quantity . '"></td>
                         <td>' . $product->price . ' €/k</td>
                         <td>' . floatval($product->price) * floatval($product->quantity) . ' €/k</td>
-                        <td><span class="delete" id="idcartdetail' . $product->idcartdetail . '" ><i class="fa-solid fa-circle-xmark" style="color: red;"></i></span> </td>
+                        <td><span class="delete" ><i class="fa-solid fa-circle-xmark" style="color: red;"></i></span> </td>
                     </tr>';
                     }
-                    echo "<tr><td class='importe_total'  colspan='5'>Total:</td><td class='euros_total' colspan='2'>" . $total . " €</td></tr>"
+                    echo "<tr><td class='importe_total'  colspan='5'>Total:</td><td class='euros_total' id='euros_total' colspan='2'>" . $total . " €</td></tr>"
                     ?>
                 </tbody>
             </table>
+        </div>
+        <button class="btn btn-success" id="btnConfirm" type="button">Order Confirm</button>
+        <div class="datos_envio" hidden>
+            <span>Delivery date:</span><input type="date" name="date">
+            <hr>
+            <span>Delivery Address</span><input type="text" name="address">
+            <hr>
         </div>
     </div>
     <!-- Option 1: Bootstrap Bundle with Popper -->

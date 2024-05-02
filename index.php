@@ -16,21 +16,33 @@ if (isset($_SESSION['username'])) {
     //comprobar si hay carrito en la bd
     $usernamec = $_SESSION['username'];
     $iduser = $_SESSION["iduser"];
-}
-if (!isset($cart)) {
-    $sql = "select * from cart_detail where idcart=(select idcart from cart where iduser=? order by date desc limit 1)";
-    $consulta = $conn->prepare($sql);
-    $consulta->bindParam(1, $iduser);
-    $consulta->execute();
-    $resultados = $consulta->fetchAll(PDO::FETCH_ASSOC);
-    $cart = array();
-    foreach ($resultados as $key => $p) {
-        $product = new Product($p["idproduct"], $p["quantity"]);
-        array_push($cart, $product);
+
+    //if (!isset($cart) || count($cart) == 0) {
+        try {
+            $sql = "select * from cart_detail where idcart=(select idcart from cart where iduser=? order by date desc limit 1)";
+            $consulta = $conn->prepare($sql);
+            $consulta->bindParam(1, $iduser);
+            $consulta->execute();
+            $result = $consulta->fetchAll(PDO::FETCH_ASSOC);
+            $cart = array();
+            foreach ($result as $key => $p) {
+                $_SESSION["idcart"] = $p["idcart"];
+                $product = new Product($p["idproduct"], $p["quantity"]);
+                array_push($cart, $product);
+            }
+            
+            $_SESSION["cart"] = $cart;
+            if (isset($_SESSION["idcart"])) {
+                $idcart = $_SESSION["idcart"];
+            }
+
+        } catch (Exception $e) {
+            echo "No se pudo agregar este producto al carrito";
+            exit();
+        }
     }
-    $_SESSION["cart"] = $cart;
-    $_SESSION["idcart"] = $resultados["idcart"];
-}
+//}
+$idcart = isset($_SESSION["idcart"]) ? $_SESSION["idcart"] : "";
 
 ?>
 <!doctype html>
@@ -76,7 +88,7 @@ if (!isset($cart)) {
 
     <div class="container contenedor-productos row">
         <div class="shop-cart" id="cart">
-            <a class="nav-link" href="cart"><span><i class="fas fa-shopping-cart"></i><?php echo isset($cart) ? count($cart) : ''; ?> </span></a>
+            <a class="nav-link" href="cart"><span><i class="fas fa-shopping-cart"></i><span id="products_count"><?php echo isset($cart) ? count($cart) : ''; ?></span> </span></a>
         </div>
         <h3>Productos</h3>
 
