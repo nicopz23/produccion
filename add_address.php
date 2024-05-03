@@ -3,8 +3,8 @@ session_start();
 if (isset($_SESSION['username'])) {
     //comprobar si hay carrito en la bd
     $usernamec = $_SESSION['username'];
-}else{
-    header ('Location: ./');
+} else {
+    header('Location: ./');
 }
 
 if (isset($_POST['street'])) {
@@ -16,16 +16,16 @@ if (isset($_POST['street'])) {
     require_once 'conexion.php';
     $sql = "insert into address (street,city,zipcode,country,iduser) values (?,?,?,?,?)";
     $stm = $conn->prepare($sql);
-    $stm->bindParam(1,$street);
-    $stm->bindParam(2,$city);
-    $stm->bindParam(3,$zipcode);
-    $stm->bindParam(4,$country);
-    $stm->bindParam(5,$iduser);
+    $stm->bindParam(1, $street);
+    $stm->bindParam(2, $city);
+    $stm->bindParam(3, $zipcode);
+    $stm->bindParam(4, $country);
+    $stm->bindParam(5, $iduser);
     $stm->execute();
-    if ($stm->rowCount()>0) {
+    if ($stm->rowCount() > 0) {
         header("Location: cart");
         exit();
-    }else{
+    } else {
         $error = "Error al crear la dirección";
     }
 }
@@ -72,7 +72,7 @@ if (isset($_POST['street'])) {
     </nav>
 
     <div class="container contenedor-productos row">
-        
+
         <h3>New Address</h3>
 
         <form action="" method="post" class="add_address">
@@ -82,13 +82,15 @@ if (isset($_POST['street'])) {
             <input class="form-control" type="text" name="country" placeholder="Country">
             <input class="btn btn-success" type="submit" value="New Address">
             <?php
-            if (isset($error)){echo "<p>".$error."</p>";}
+            if (isset($error)) {
+                echo "<p>" . $error . "</p>";
+            }
             ?>
         </form>
 
 
     </div>
-    
+
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 

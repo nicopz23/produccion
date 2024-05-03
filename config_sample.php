@@ -1,12 +1,13 @@
 <?php
+
 /** The name of the database for AppDB */
-define( 'DB_NAME', '' );
+define('DB_NAME', '');
 
 /** Database username */
-define( 'DB_USER', '' );
+define('DB_USER', '');
 
 /** Database password */
-define( 'DB_PASSWORD', '' );
+define('DB_PASSWORD', '');
 
 /** Database hostname */
-define( 'DB_HOST', '' );
+define('DB_HOST', '');

@@ -1,27 +1,34 @@
-.producto-detalle{
+.producto-detalle {
     display: flex;
 }
-.add-to-cart input{
+
+.add-to-cart input {
     margin-right: 12px;
     width: 60% !important;
 }
-.add-to-cart a{
-    
+
+.add-to-cart a {
+
     width: 30% !important;
 }
-.productcard{
+
+.productcard {
     margin: 5px;
 }
+
 .add-to-cart {
     display: flex;
 }
-.contenedor-productos{
+
+.contenedor-productos {
     margin: 0 auto;
 }
-.shop-cart{
+
+.shop-cart {
     text-align: right;
 }
-.shop-cart span{
+
+.shop-cart span {
     border: 1px solid #000000;
     padding: 7.2px;
     border-radius: 50%;
@@ -29,41 +36,58 @@
     height: 60px;
     font-size: 30px;
 }
-.email{
+
+.email {
     margin-bottom: 10px;
 }
-#user{
+
+#user {
     margin-left: auto;
-    color : rgba(255, 255, 255, .55);
+    color: rgba(255, 255, 255, .55);
 }
-.img-cart{
+
+.img-cart {
     width: 100px;
 }
-.importe_total{
-    text-align:right; 
-    font-weight:bold;
+
+.importe_total {
+    text-align: right;
+    font-weight: bold;
 }
-.euros_total{
+
+.euros_total {
     text-align: center;
     font-weight: bold;
 }
-#products_count{
+
+#products_count {
     border: none;
 }
-.add_address input{
+
+.add_address input {
     margin: 10px;
 }
-.add_address{
+
+.add_address {
     margin-top: 5px;
     padding: 10px;
     border: 1px solid green;
     border-radius: 10px;
 }
-.address div{
+
+.address div {
     border: 1px solid green;
     margin: 10px;
     border-radius: 5px;
 }
+
 .back {
-    background-color: #6EB5FF; /* Cambia el color de fondo a tu elección */
+    background-color: #6EB5FF;
+    /* Cambia el color de fondo a tu elección */
+}
+
+.close {
+    color: rgba(255, 255, 255, .55);
+    inline-size: auto;
+    margin-left: 580px;
 }

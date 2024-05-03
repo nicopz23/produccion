@@ -17,27 +17,38 @@ if (isset($_SESSION['username'])) {
     $usernamec = $_SESSION['username'];
     $iduser = $_SESSION["iduser"];
 
-    //if (!isset($cart) || count($cart) == 0) {
     try {
-        $sql = "select * from cart_detail where idcart=(select idcart from cart where iduser=? order by date desc limit 1)";
-        $consulta = $conn->prepare($sql);
-        $consulta->bindParam(1, $iduser);
-        $consulta->execute();
-        $result = $consulta->fetchAll(PDO::FETCH_ASSOC);
-        $cart = array();
-        foreach ($result as $key => $p) {
-            $_SESSION["idcart"] = $p["idcart"];
-            $product = new Product($p["idproduct"], $p["quantity"]);
-            array_push($cart, $product);
-        }
-
-        $_SESSION["cart"] = $cart;
-        if (isset($_SESSION["idcart"])) {
-            $idcart = $_SESSION["idcart"];
+        $sql = "select C.idcart from cart C 
+        left join `order` O on C.idcart=O.idcart 
+        where iduser=? and O.idcart is null order by C.date desc limit 1";
+        $stm = $conn->prepare($sql);
+        $stm->bindParam(1, $iduser);
+        $stm->execute();
+        $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+        if ($stm->rowCount() > 0) {
+            $idcart = $result[0]["idcart"];
+            //Consulto los articulos del carrito
+            $sql = "select * from cart_detail where idcart=?";
+            $stm = $conn->prepare($sql);
+            $stm->bindParam(1, $idcart);
+            $stm->execute();
+            $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+            $cart = array();
+            foreach ($result as $key => $p) {
+                $_SESSION["idcart"] = $p["idcart"];
+                $product = new Product($p["idproduct"], $p["quantity"]);
+                array_push($cart, $product);
+            }
+            $_SESSION["idcart"] = $idcart;
+            $_SESSION["cart"] = $cart;
         }
     } catch (Exception $e) {
         echo "No se pudo agregar este producto al carrito";
         exit();
+    }
+} else {
+    if (isset($_SESSION["cart"])) {
+        $cart = $_SESSION["cart"];
     }
 }
 //}
@@ -81,6 +92,7 @@ $idcart = isset($_SESSION["idcart"]) ? $_SESSION["idcart"] : "";
                     </li>
 
                 </ul>
+                <a class="dropdown-item close" href="close">Close session</a>
                 <span id="user"><?php if (isset($usernamec)) echo "Bienvenido " . $usernamec; ?></span>
             </div>
         </div>
@@ -152,7 +164,7 @@ $idcart = isset($_SESSION["idcart"]) ? $_SESSION["idcart"] : "";
     -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="assets/js/product.js"></script>
-  
+
 </body>
 
 </html>

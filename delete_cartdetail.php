@@ -9,18 +9,18 @@ $stm->bindParam(1, $idcartdetail);
 $stm->execute();
 unset($_SESSION["cart"]);
 //Recuperamos el resto del carrito
-$idcart=$_SESSION["idcart"];
-$sql="SELECT * FROM cart_detail as D
+$idcart = $_SESSION["idcart"];
+$sql = "SELECT * FROM cart_detail as D
 left join product as P on D.idproduct=P.idproduct where idcart=?";
-$stm=$conn->prepare($sql);
-$stm->bindParam(1,$idcart);
+$stm = $conn->prepare($sql);
+$stm->bindParam(1, $idcart);
 $stm->execute();
-$result=$stm->fetchAll(PDO::FETCH_ASSOC);
+$result = $stm->fetchAll(PDO::FETCH_ASSOC);
 
 
 $response = array(
     'idcart' => $idcart,
-    'cart'=>$result,
+    'cart' => $result,
     'mensaje' => '¡Solicitud recibida correctamente!'
 );
 

@@ -25,27 +25,6 @@ if (isset($_POST["username"])) {
         }
     }
 
-    // Verificar si el archivo ya existe
-    if (file_exists($target_file)) {
-        echo "Sorry, file already exists.";
-        $uploadOk = 0;
-    }
-
-    // Verificar el tamaño de la imagen
-    if ($_FILES["image"]["size"] > 500000) {
-        echo "Sorry, your file is too large.";
-        $uploadOk = 0;
-    }
-
-    // Permitir ciertos formatos de archivo
-    if (
-        $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-        && $imageFileType != "gif"
-    ) {
-        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-        $uploadOk = 0;
-    }
-
     // Verificar si $uploadOk está configurado en 0 por un error
     if ($uploadOk == 0) {
         echo "Sorry, your file was not uploaded.";
@@ -164,6 +143,28 @@ if (isset($_POST["username"])) {
 
                                 <hr class="mx-n3">
                                 <?php
+
+                                // Verificar si el archivo ya existe
+                                if (file_exists($target_file)) {
+                                    echo "Sorry, file already exists.";
+                                    $uploadOk = 0;
+                                }
+
+                                // Verificar el tamaño de la imagen
+                                if ($_FILES["image"]["size"] > 500000) {
+                                    echo "Sorry, your file is too large.";
+                                    $uploadOk = 0;
+                                }
+
+                                // Permitir ciertos formatos de archivo
+                                if (
+                                    $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+                                    && $imageFileType != "gif"
+                                ) {
+                                    echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+                                    $uploadOk = 0;
+                                }
+
                                 if (isset($error)) {
                                     echo "<p>" . $error . "</p>";
                                 }

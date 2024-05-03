@@ -93,6 +93,7 @@ if (isset($_SESSION["username"])) {
                         <a class="nav-link" href="./">Inicio</a>
                     </li>
                 </ul>
+                <a class="dropdown-item close" href="close">Close session</a>
                 <span id="user"><?php if (isset($usernamec)) echo "Bienvenido " . $usernamec; ?></span>
             </div>
         </div>

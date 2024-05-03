@@ -9,10 +9,10 @@ if (isset($_GET["idproduct"])) {
     if (isset($_SESSION["username"])) {
         include 'conexion.php';
         $iduser = $_SESSION["iduser"];
+        $price = $_GET["price"];
         //Guardamos en bbdd
         if (isset($_GET["idcart"])) {
             $idcart = $_GET["idcart"];
-            $price = $_GET["price"];
         } else {
             $sql_cart = "insert into cart (iduser) value (?)";
             $stm_cart = $conn->prepare($sql_cart);
@@ -38,7 +38,6 @@ if (isset($_GET["idproduct"])) {
         }
         array_push($cart, $product);
         $_SESSION["cart"] = $cart;
-        var_dump($cart);
     }
 }
 
