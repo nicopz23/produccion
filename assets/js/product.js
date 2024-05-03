@@ -73,3 +73,7 @@ $("#cart").click(function (e) {
       });
   
   })
+
+  $("#btnConfirm").click(()=>{
+    $(".datos_envio").show();
+  })

@@ -141,7 +141,7 @@ if (isset($_SESSION["username"])) {
             </table>
         </div>
         <button class="btn btn-success" id="btnConfirm" type="button">Order Confirm</button>
-        <div class="datos_envio">
+        <div class="datos_envio" style="display: none;">
 
             <form action="add_order" method="post">
                 <span>Delivery date: </span><input type="date" name="date" required>
