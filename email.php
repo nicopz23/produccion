@@ -1,7 +1,5 @@
 <?php
-require 'PHPMailer/src/PHPMailer.php';
-require 'PHPMailer/src/SMTP.php';
-require 'PHPMailer/src/Exception.php';
+require 'vendor/autoload.php';
 $mail = new PHPMailer\PHPMailer\PHPMailer();
 
 // Configurar el servidor SMTP y las credenciales
@@ -11,8 +9,8 @@ $mail->SMTPAuth = true;
 
 $mail->Username = 'basurista9@gmail.com';
 $mail->Password = 'N12345678*';
-$mail->SMTPSecure = 'tls'; // Puede ser 'ssl' también, dependiendo de la configuración del servidor
-$mail->Port = 587; // Puerto SMTP
+$mail->SMTPSecure = 'ssl'; // Puede ser 'ssl' también, dependiendo de la configuración del servidor
+$mail->Port = 465; // Puerto SMTP
 
 // Configurar el remitente y el destinatario
 $mail->setFrom('basurista9@gmail.com', 'Basurita');
