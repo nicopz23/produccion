@@ -18,29 +18,28 @@ if (isset($_SESSION['username'])) {
     $iduser = $_SESSION["iduser"];
 
     //if (!isset($cart) || count($cart) == 0) {
-        try {
-            $sql = "select * from cart_detail where idcart=(select idcart from cart where iduser=? order by date desc limit 1)";
-            $consulta = $conn->prepare($sql);
-            $consulta->bindParam(1, $iduser);
-            $consulta->execute();
-            $result = $consulta->fetchAll(PDO::FETCH_ASSOC);
-            $cart = array();
-            foreach ($result as $key => $p) {
-                $_SESSION["idcart"] = $p["idcart"];
-                $product = new Product($p["idproduct"], $p["quantity"]);
-                array_push($cart, $product);
-            }
-            
-            $_SESSION["cart"] = $cart;
-            if (isset($_SESSION["idcart"])) {
-                $idcart = $_SESSION["idcart"];
-            }
-
-        } catch (Exception $e) {
-            echo "No se pudo agregar este producto al carrito";
-            exit();
+    try {
+        $sql = "select * from cart_detail where idcart=(select idcart from cart where iduser=? order by date desc limit 1)";
+        $consulta = $conn->prepare($sql);
+        $consulta->bindParam(1, $iduser);
+        $consulta->execute();
+        $result = $consulta->fetchAll(PDO::FETCH_ASSOC);
+        $cart = array();
+        foreach ($result as $key => $p) {
+            $_SESSION["idcart"] = $p["idcart"];
+            $product = new Product($p["idproduct"], $p["quantity"]);
+            array_push($cart, $product);
         }
+
+        $_SESSION["cart"] = $cart;
+        if (isset($_SESSION["idcart"])) {
+            $idcart = $_SESSION["idcart"];
+        }
+    } catch (Exception $e) {
+        echo "No se pudo agregar este producto al carrito";
+        exit();
     }
+}
 //}
 $idcart = isset($_SESSION["idcart"]) ? $_SESSION["idcart"] : "";
 
@@ -61,9 +60,10 @@ $idcart = isset($_SESSION["idcart"]) ? $_SESSION["idcart"] : "";
 </head>
 
 <body>
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">Mi Tienda</a>
+            <a class="navbar-brand" href="./">Mi Tienda</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -71,13 +71,13 @@ $idcart = isset($_SESSION["idcart"]) ? $_SESSION["idcart"] : "";
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Inicio</a>
+                        <a class="nav-link" href="./">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Productos</a>
+                        <a class="nav-link" href="login">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contacto</a>
+                        <a class="nav-link" href="register">Register</a>
                     </li>
 
                 </ul>
@@ -152,6 +152,7 @@ $idcart = isset($_SESSION["idcart"]) ? $_SESSION["idcart"] : "";
     -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="assets/js/product.js"></script>
+  
 </body>
 
 </html>

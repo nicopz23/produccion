@@ -63,5 +63,7 @@
     border: 1px solid green;
     margin: 10px;
     border-radius: 5px;
-    
+}
+.back {
+    background-color: #6EB5FF; /* Cambia el color de fondo a tu elección */
 }

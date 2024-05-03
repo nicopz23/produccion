@@ -15,6 +15,8 @@ if (isset($_SESSION["username"]) && isset($_SESSION["idcart"])) {
         $stm->execute();
         if($stm->rowCount()> 0){
             //pendiente borrar datos de carrito en session
+            header("Location: ./");
+            exit();
         }
         }else{
             header("Location: ./");
